@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>📖 Available Books</h2>
+
+<div class="book-grid">
+    {% for book in books %}
+        <div class="card">
+            <h3>{{ book.title }}</h3>
+            <p>by {{ book.author }}</p>
+            <p><strong>₹{{ book.price }}</strong></p>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

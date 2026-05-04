@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="book-detail">
+    <img src="{{ book.image_url }}" class="detail-img">
+
+    <div class="detail-info">
+        <h1>{{ book.title }}</h1>
+        <h3>{{ book.author }}</h3>
+        <p class="price">₹{{ book.price }}</p>
+
+        <br>
+
+        <a href="/buy/{{ book.id }}">
+            <button>Buy Now</button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

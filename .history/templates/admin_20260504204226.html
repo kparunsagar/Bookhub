@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Admin Panel</h2>
+
+<h3>Add Category</h3>
+<form method="POST" action="/add-category">
+    <input type="text" name="name" placeholder="Category Name" required>
+    <button type="submit">Add</button>
+</form>
+
+<hr>
+
+<h3>Add Book</h3>
+<form method="POST" action="/add-book">
+    <input type="text" name="title" placeholder="Book Title" required><br><br>
+    <input type="text" name="author" placeholder="Author" required><br><br>
+
+    <select name="category_id">
+        {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+        {% endfor %}
+    </select><br><br>
+
+    <input type="number" name="price" placeholder="Price"><br><br>
+
+    <button type="submit">Add Book</button>
+</form>
+
+{% endblock %}
