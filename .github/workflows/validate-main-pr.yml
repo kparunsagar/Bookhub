@@ -1,0 +1,19 @@
+name: Validate PR to Main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-source:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check source branch
+        run: |
+          echo "Source Branch: ${{ github.head_ref }}"
+          if [[ "${{ github.head_ref }}" != release/* ]]; then
+            echo "Only release branches can be merged into main."
+            exit 1
+          fi
