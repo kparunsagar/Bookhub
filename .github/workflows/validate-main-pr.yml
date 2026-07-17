@@ -1,19 +1,66 @@
-name: Validate PR to Main
+name: Validate Branch Flow
 
 on:
   pull_request:
     branches:
       - main
+      - 'release/**'
+
+permissions:
+  contents: read
 
 jobs:
-  validate-source:
+  validate-branch-flow:
+    name: Validate Branch Strategy
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check source branch
+      - name: Validate PR Source and Target Branches
+        shell: bash
         run: |
-          echo "Source Branch: ${{ github.head_ref }}"
-          if [[ "${{ github.head_ref }}" != release/* ]]; then
-            echo "Only release branches can be merged into main."
+          BASE="${{ github.base_ref }}"
+          HEAD="${{ github.head_ref }}"
+
+          echo "========================================="
+          echo "Source Branch : $HEAD"
+          echo "Target Branch : $BASE"
+          echo "========================================="
+
+          ###############################################################
+          # Rule 1
+          # Only release/* -> main
+          ###############################################################
+          if [[ "$BASE" == "main" ]]; then
+
+            if [[ "$HEAD" =~ ^release\/ ]]; then
+              echo "✅ Allowed: release/* -> main"
+              exit 0
+            fi
+
+            echo "::error::Direct merge into MAIN is not allowed."
+            echo "::error::Only release/* branches can be merged into main."
             exit 1
           fi
+
+          ###############################################################
+          # Rule 2
+          # Only feature/* or bugfix/* -> release/*
+          ###############################################################
+          if [[ "$BASE" =~ ^release\/ ]]; then
+
+            if [[ "$HEAD" =~ ^feature\/ ]]; then
+              echo "✅ Allowed: feature/* -> release/*"
+              exit 0
+            fi
+
+            if [[ "$HEAD" =~ ^bugfix\/ ]]; then
+              echo "✅ Allowed: bugfix/* -> release/*"
+              exit 0
+            fi
+
+            echo "::error::Invalid merge into Release branch."
+            echo "::error::Only feature/* or bugfix/* branches can be merged into release/*."
+            exit 1
+          fi
+
+          echo "✅ Branch validation completed successfully."
